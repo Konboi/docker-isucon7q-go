@@ -1,0 +1,59 @@
+version: '3'
+volumes:
+  mysql: {}
+services:
+#  bench:
+#    build:
+#      context: ./bench/
+#    image: isucon7-qualifier-bench
+#    depends_on:
+#      - web
+#    links:
+#      - web
+#    networks:
+#      - web
+  web:
+    image: nginx:1.10
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/isucon.conf
+      - ./public:/public
+      - ./log/nginx:/var/log/nginx
+    ports:
+      - 80:80
+    depends_on:
+      - app
+    networks:
+      - web
+  app:
+    image: golang:1.10.3
+    working_dir: /app
+    environment:
+      TZ: Asia/Tokyo
+    volumes:
+      - .:/app
+      - ./vendor:/go/src/
+    depends_on:
+      - mysql
+    networks:
+      - db
+    command: ["go", "run", "app.go"]
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_SET_CHARSET_NAME: utf8mb4
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: isubata
+      MYSQL_USER: isucon
+      MYSQL_PASSWORD: isucon
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./log/mysql:/var/log/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+      - ./mysql:/etc/mysql/conf.d
+    networks:
+      - db
+    ports:
+      - 3306:3306
+networks:
+  web:
+  db:
