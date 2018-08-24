@@ -4,6 +4,7 @@ isucon7の予選問題のgo言語環境を起動します
 
 
 ```
+dep ensure
 docker-compose up -d
 ```
 
