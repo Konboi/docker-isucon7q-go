@@ -2,16 +2,6 @@ version: '3'
 volumes:
   mysql: {}
 services:
-#  bench:
-#    build:
-#      context: ./bench/
-#    image: isucon7-qualifier-bench
-#    depends_on:
-#      - web
-#    links:
-#      - web
-#    networks:
-#      - web
   web:
     image: nginx:1.10
     volumes:
